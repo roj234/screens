@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import {mkdir, readFile, stat, writeFile} from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -6,11 +6,14 @@ const DATA_DIR = path.normalize('data');
 const PRESETS_FILE = path.join(DATA_DIR, 'presets.json');
 
 let presets;
+let readTime;
 
 async function readPresets() {
 	try {
-		if (presets) return presets;
+		const lastMod = (await stat(PRESETS_FILE)).mtimeMs;
+		if (presets && readTime === lastMod) return presets;
 
+		readTime = lastMod;
 		const raw = await readFile(PRESETS_FILE, 'utf8');
 		return presets = JSON.parse(raw);
 	} catch {
@@ -21,6 +24,7 @@ async function readPresets() {
 async function writePresets(presets) {
 	await mkdir(DATA_DIR, { recursive: true });
 	await writeFile(PRESETS_FILE, JSON.stringify(presets, null, 2), 'utf8');
+	readTime = Date.now();
 }
 
 export async function getAll() {
@@ -48,7 +52,7 @@ export async function save(preset) {
 export async function remove(id) {
 	let presets = await readPresets();
 	presets = presets.filter(p => p.id !== id);
-	await writePresets(presets);
+	return writePresets(presets);
 }
 
 export async function getById(id) {

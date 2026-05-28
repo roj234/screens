@@ -18,8 +18,7 @@ export default {
             exclude: ["vendor/*"]
         }),
         purgecss({
-            safelist: [
-            ]
+            safelist: []
         }),
         {
             name: 'inject-build-time',
@@ -40,14 +39,5 @@ export default {
     build: {
         modulePreload: { polyfill: false },
         //sourcemap: true,
-
-        assetsInlineLimit: 512,
-        rollupOptions: {
-            output: {
-                entryFileNames: `[name].[hash].js`,
-                chunkFileNames: `[name].[hash].js`,
-                assetFileNames: `[name].[hash].[ext]`,
-            },
-        }
     }
 };

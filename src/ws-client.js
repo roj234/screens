@@ -1,7 +1,7 @@
 let ws = null;
 let reconnectAttempts = 0;
 const MAX_RECONNECT = 10;
-const RECONNECT_DELAY = 3000;
+const RECONNECT_DELAY = 1000;
 let reconnectTimer = null;
 const handlers = new Map();
 let url = '';
@@ -42,13 +42,13 @@ function doConnect() {
 			reconnectTimer = setTimeout(() => {
 				reconnectAttempts++;
 				doConnect();
-			}, RECONNECT_DELAY);
+			}, RECONNECT_DELAY * Math.pow(2, reconnectAttempts));
 		}
 		trigger('close', null);
 	};
 
-	ws.onerror = (err) => {
-		trigger('error', err);
+	ws.onerror = () => {
+		trigger('error', {error: "WebSocket连接断开"});
 	};
 }
 

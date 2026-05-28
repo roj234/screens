@@ -1,11 +1,11 @@
-import { exec as execCb, spawn } from 'child_process';
-import { promisify } from 'util';
+import {exec as execCb, spawn} from 'child_process';
+import {promisify} from 'util';
 import crypto from 'crypto';
 import path from 'path';
-import { mkdir, appendFile } from 'fs/promises';
-import { RingBuffer } from './ring-buffer.js';
-import { getById } from './preset-store.js';
-import {tokenize} from "./tokenizer.js";
+import {appendFile, mkdir} from 'fs/promises';
+import {RingBuffer} from './ring-buffer.js';
+import {getById} from './preset-store.js';
+import {tokenize} from "unconscious/common/StringTokenizer.js";
 import iconv from 'iconv-lite';
 
 const exec = promisify(execCb);
@@ -174,8 +174,9 @@ export async function createSession(presetId) {
 	});
 
 	childProcess.on('error', (err) => {
+		pushLog(sessionId, 'stderr', `--- Process error: ${JSON.stringify(err.message)} ---`);
+
 		session.exitCode = -1;
-		pushLog(sessionId, 'stderr', `--- Process error: ${err.message} ---`);
 		broadcastToSession(sessionId, 'session_status', { exitCode: -1 });
 	});
 

@@ -1,11 +1,10 @@
 import * as Tabs from "./tabs.js";
 import * as WSClient from "./ws-client.js";
-import {$state, $store, appendChildren} from "unconscious";
-import {VirtualList} from "unconscious/ext/VirtualList.js";
+import {$state, appendChildren} from "unconscious";
+import {VirtualList} from "unconscious/common/VirtualList.js";
 
 
-
-	const terminals = new Map();
+const terminals = new Map();
 const HISTORY_LIMIT = 100;
 
 /**
@@ -88,18 +87,16 @@ function createSession({id, name, lastLogId, exitCode: exitCode_, ...rest}) {
 	const onInputKeydown = e => {
 		if (e.key === 'ArrowUp') {
 			e.preventDefault();
-			const hist = commandHistory;
-			if (hist.length > 0) {
-				if (historyIndex < 0) historyIndex = hist.length;
+			if (commandHistory.length > 0) {
+				if (historyIndex < 0) historyIndex = commandHistory.length;
 				if (historyIndex > 0) historyIndex--;
-				inputEl.value = hist[historyIndex] || '';
+				inputEl.value = commandHistory[historyIndex] || '';
 			}
 		} else if (e.key === 'ArrowDown') {
 			e.preventDefault();
-			const hist = commandHistory;
-			if (historyIndex >= 0 && historyIndex < hist.length - 1) {
+			if (historyIndex >= 0 && historyIndex < commandHistory.length - 1) {
 				historyIndex++;
-				inputEl.value = hist[historyIndex] || '';
+				inputEl.value = commandHistory[historyIndex] || '';
 			} else {
 				historyIndex = -1;
 				inputEl.value = '';
@@ -192,7 +189,7 @@ function createSession({id, name, lastLogId, exitCode: exitCode_, ...rest}) {
 		itemHeight: 20,
 		data: [],
 		renderer(entry) {
-			return <div className={"log-line"}>{entry.data}</div>;
+			return <div className={"log-line"}>{entry.data.trimEnd()}</div>;
 		}
 	});
 

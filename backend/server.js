@@ -1,13 +1,13 @@
 import http from 'http';
 import path from 'path';
-import { readFile, stat } from 'fs/promises';
-import { WebSocketServer } from 'ws';
+import {readFile, stat} from 'fs/promises';
+import {WebSocketServer} from 'ws';
 
 import * as presetStore from './preset-store.js';
 import * as procManager from './process-manager.js';
-import { subscribe as subscribeSystemInfo } from './system-info.js';
+import {subscribe as subscribeSystemInfo} from './system-info.js';
 
-const PUBLIC_HTML = path.normalize('dist/index.html');
+const PUBLIC_HTML = path.normalize('index.html');
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
 let cachedHtml;
@@ -110,12 +110,19 @@ wss.on('connection', (ws) => {
 
 					const entries = procManager.getLogsAfter(sessionId, msg.lastLogId || 0);
 					ws.send(JSON.stringify({
-						type: 'session_history',
+						type: 'session_log',
 						sessionId,
 						entries
 					}));
 
-					const {lastLine} = session;
+					const {lastLine, exitCode} = session;
+
+					ws.send(JSON.stringify({
+						type: 'session_status',
+						sessionId,
+						exitCode,
+					}));
+
 					if (lastLine) {
 						ws.send(JSON.stringify({
 							type: 'session_last',
