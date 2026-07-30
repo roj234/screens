@@ -186,7 +186,7 @@ function createSession({id, name, lastLogId, exitCode: exitCode_, ...rest}) {
 
 	const logs = new VirtualList({
 		element: outputEl,
-		itemHeight: 20,
+		itemHeight: null,
 		data: [],
 		renderer(entry) {
 			return <div className={"log-line"}>{entry.data.trimEnd()}</div>;
@@ -210,7 +210,7 @@ function createSession({id, name, lastLogId, exitCode: exitCode_, ...rest}) {
 		if (prepend && isNotInitial) {
 			loadingHistory = false;
 			loaderEl.style.display = 'none';
-			outputEl.scrollTop += 20 * entries.length;
+			outputEl.scrollTop += logs.itemHeight * entries.length;
 			return;
 		} else if (autoScroll) {
 			outputEl.scrollTop = outputEl.scrollHeight;
