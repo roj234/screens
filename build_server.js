@@ -10,6 +10,7 @@ const serverAbsPath = path.resolve(__dirname, 'dist/server.js');
 const rollupConfig = {
 	input: 'backend/server.js',
 	external: [
+		'bufferutil',
 		...Object.keys(serverPackageInfo.dependencies || {}),
 	],
 	plugins: [

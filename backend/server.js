@@ -1,7 +1,7 @@
 import http from 'http';
 import path from 'path';
 import {readFile, stat} from 'fs/promises';
-import {WebSocketServer} from 'ws';
+import {WebSocketServer} from 'unconscious/common/ws2/src/index.js';
 
 import * as presetStore from './preset-store.js';
 import * as procManager from './process-manager.js';
