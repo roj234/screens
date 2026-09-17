@@ -1,12 +1,13 @@
-import {exec as execCb, spawn} from 'child_process';
-import {promisify} from 'util';
-import crypto from 'crypto';
-import path from 'path';
-import {appendFile, mkdir} from 'fs/promises';
+import {exec as execCb, spawn} from 'node:child_process';
+import {promisify} from 'node:util';
+import crypto from 'node:crypto';
+import path from 'node:path';
+import {appendFile, mkdir} from 'node:fs/promises';
 import {RingBuffer} from './ring-buffer.js';
 import {getById} from './preset-store.js';
 import {tokenize} from "unconscious/common/StringTokenizer.js";
 import iconv from 'iconv-lite';
+import {ANSI_SEQ} from "../src/ansi-seq.mjs";
 
 const exec = promisify(execCb);
 
@@ -29,10 +30,18 @@ function ensureLogDir(sessionId) {
 	return mkdir(dir, { recursive: true });
 }
 
+/**
+ *
+ * @param {string} sessionId
+ * @param {string} stream
+ * @param {string} data
+ * @param timestamp
+ * @return {*}
+ */
 function writeToLogFile(sessionId, stream, data, timestamp) {
 	const date = new Date(timestamp);
 	const timeStr = date.toTimeString().slice(0, 8);
-	const line = `[${timeStr}] [${stream}] ${data}\n`;
+	const line = `[${timeStr}] [${stream}] ${data.replaceAll(ANSI_SEQ, "")}\n`;
 	return appendFile(getLogFile(sessionId), line, 'utf8');
 }
 
@@ -90,6 +99,10 @@ export async function createSession(presetId) {
 
 		childProcess = spawn(command, args, {
 			cwd,
+			env: {
+				...process.env,
+				...preset.env
+			},
 			stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
 			windowsHide: true
 		});

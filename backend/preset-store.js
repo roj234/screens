@@ -1,6 +1,6 @@
-import {mkdir, readFile, stat, writeFile} from 'fs/promises';
-import path from 'path';
-import crypto from 'crypto';
+import {mkdir, readFile, stat, writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
 
 const DATA_DIR = path.normalize('data');
 const PRESETS_FILE = path.join(DATA_DIR, 'presets.json');

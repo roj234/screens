@@ -2,7 +2,7 @@ import * as Tabs from "./tabs.js";
 import * as WSClient from "./ws-client.js";
 import {$state, appendChildren} from "unconscious";
 import {VirtualList} from "unconscious/common/VirtualList.js";
-
+import ansiToHtml from "./ansi2html.mjs";
 
 const terminals = new Map();
 const HISTORY_LIMIT = 100;
@@ -189,7 +189,7 @@ function createSession({id, name, lastLogId, exitCode: exitCode_, ...rest}) {
 		itemHeight: null,
 		data: [],
 		renderer(entry) {
-			return <div className={"log-line"}>{entry.data.trimEnd()}</div>;
+			return <div className={"log-line"} dangerouslySetInnerHTML={ansiToHtml(entry.data.trimEnd())}/>;
 		}
 	});
 

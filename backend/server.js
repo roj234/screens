@@ -1,6 +1,6 @@
-import http from 'http';
-import path from 'path';
-import {readFile, stat} from 'fs/promises';
+import http from 'node:http';
+import path from 'node:path';
+import {readFile, stat} from 'node:fs/promises';
 import {WebSocketServer} from 'unconscious/common/ws2/src/index.js';
 
 import * as presetStore from './preset-store.js';
