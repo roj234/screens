@@ -2,7 +2,7 @@ import * as Tabs from "./tabs.js";
 import * as WSClient from "./ws-client.js";
 import {$state, appendChildren} from "unconscious";
 import {VirtualList} from "unconscious/common/VirtualList.js";
-import ansiToHtml from "./ansi2html.mjs";
+import ansiToHtml from "@roj234/ansi2html";
 
 const terminals = new Map();
 const HISTORY_LIMIT = 100;

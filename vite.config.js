@@ -1,7 +1,7 @@
 // vite.config.js
 
-import unconscious from 'unconscious/VitePlugin.mjs';
-import purgecss from 'unconscious/VitePurgeCSS.mjs';
+import unconscious from 'unconscious/vite';
+import purgecss from '@roj234/ie/plugins/purgecss.js';
 import {viteSingleFile} from "vite-plugin-singlefile";
 
 import packageInfo from "./package.json";

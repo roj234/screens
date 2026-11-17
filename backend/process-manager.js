@@ -7,7 +7,7 @@ import {RingBuffer} from './ring-buffer.js';
 import {getById} from './preset-store.js';
 import {tokenize} from "unconscious/common/StringTokenizer.js";
 import iconv from 'iconv-lite';
-import {ANSI_SEQ} from "../src/ansi-seq.mjs";
+import {ANSI_SEQ} from "@roj234/ansi2html/seq";
 
 const exec = promisify(execCb);
 

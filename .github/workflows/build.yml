@@ -14,12 +14,15 @@ jobs:
         with:
           path: packages/screens
 
-      - name: Clone unconscious
-        run: git clone https://github.com/roj234/unconscious.git packages/unconscious
+      - name: Checkout @roj234
+        uses: actions/checkout@v6
+        with:
+          path: packages/@roj234
+          repository: roj234/unconscious
 
       - name: Setup monorepo root
         run: |
-          echo '{ "private": true, "workspaces": ["packages/*"] }' > package.json
+          echo '{ "private": true, "workspaces": ["packages/*", "packages/@roj234/*"] }' > package.json
 
       - name: Install dependencies
         run: npm install
@@ -33,3 +36,29 @@ jobs:
         with:
           name: dist
           path: packages/screens/dist
+
+  release:
+    permissions:
+      contents: write
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download release package
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: release-files
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.event.inputs.tag_name || format('v{0}', github.run_number) }}
+          name: ${{ github.event.inputs.tag_name || format('b{0}', github.run_number) }}
+          body: |
+            ${{ github.event.head_commit.message }}
+          files: |
+            release-files/*
+          draft: false
+          prerelease: false

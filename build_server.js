@@ -2,7 +2,7 @@ import {rollup} from 'rollup';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import serverPackageInfo from './package.json' with {type: 'json'};
-import {nodeResolve} from 'unconscious/vite/build-backend.js';
+import {nodeResolve} from '@roj234/ie/plugins/build-backend-helper.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverAbsPath = path.resolve(__dirname, 'dist/server.js');
@@ -11,6 +11,7 @@ const rollupConfig = {
 	input: 'backend/server.js',
 	external: [
 		'bufferutil',
+		...Object.keys(serverPackageInfo.peerDependencies || {}),
 		...Object.keys(serverPackageInfo.dependencies || {}),
 	],
 	plugins: [
